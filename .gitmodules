@@ -1,0 +1,10 @@
+[submodule "cpp/extern/hl2sdk"]
+	path = cpp/extern/hl2sdk
+	url = https://github.com/alliedmodders/hl2sdk
+	branch = cs2
+[submodule "cpp/extern/metamod"]
+	path = cpp/extern/metamod
+	url = https://github.com/alliedmodders/metamod-source
+[submodule "cpp/extern/cs2fixes"]
+	path = cpp/extern/cs2fixes
+	url = https://github.com/Source2ZE/CS2Fixes
