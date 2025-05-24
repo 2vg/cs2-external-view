@@ -1,3 +1,5 @@
+addons/externalviewhelper/bin/win64
+
 cpp/.vs
 cpp/.vscode
 cpp/out
