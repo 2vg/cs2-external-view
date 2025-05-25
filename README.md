@@ -27,6 +27,18 @@ ExternalView provides external camera modes (third-person, model view, watch oth
 > [!CAUTION]
 > ConVar names are different from the standalone version.
 
+
+## Test map
+
+I've created a simple map for testing ExternalView.
+Feel free to test the plugin in there if you want.
+
+[test_external_view](https://steamcommunity.com/sharedfiles/filedetails/?id=3482813504) on CS2 workshop
+
+```
+host_workshop_map 3482813504
+```
+
 ## Camera modes
 
 ExternalView provides the following camera modes:
@@ -65,6 +77,8 @@ ExternalView will generate a .cfg file to the following path if it is not create
 csgo/cfg/extv/extv.cfg
 ```
 
+extv.cfg (default):
+
 ```
 // ===== External View =====
 
@@ -80,11 +94,17 @@ extv_thirdperson_max_distance 200
 // The speed of model view camera movement
 extv_modelview_speed 160
 
+// The speed of model view camera movement while walk button pressed
+extv_modelview_alt_speed 40
+
 // The radius from the player the model view camera can fly around
 extv_modelview_radius 120
 
 // The speed of free camera movement
 extv_freecam_speed 800
+
+// The speed of free camera movement while walk button pressed
+extv_freecam_alt_speed 2400
 
 // True if observer views (i.e., freecam and watch) are enabled for non-admin players.
 extv_observer_enabled 1
@@ -123,6 +143,11 @@ I'd like to acknowledge the ideas and inspirations I've drawn from the following
 - [CounterStrikeSharp](https://docs.cssharp.dev/index.html)
 
 ## Changelogs
+
+#### v2.0.2 (25-05-25)
+
+- Fix some CVars are not being tracked
+	- NOTE: Remove your extv/extv.cfg or copy the default extv.cfg in README to retain the missing CVars
 
 #### v2.0.1 (25-05-25)
 

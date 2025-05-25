@@ -88,8 +88,10 @@ namespace LupercaliaMGCore.modules.ExternalView
             TrackConVar(ConVar_ThirdPersonMinDistance);
             TrackConVar(ConVar_ThirdPersonMaxDistance);
             TrackConVar(ConVar_ModelViewCameraSpeed);
+            TrackConVar(ConVar_ModelViewCameraAltSpeed);
             TrackConVar(ConVar_ModelViewCameraRadius);
             TrackConVar(ConVar_FreeCameraSpeed);
+            TrackConVar(ConVar_FreeCameraAltSpeed);
             TrackConVar(ConVar_IsObserverViewEnabled);
             TrackConVar(ConVar_IsAdminPrivilegesEnabled);
 
