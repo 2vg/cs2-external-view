@@ -124,6 +124,12 @@ I'd like to acknowledge the ideas and inspirations I've drawn from the following
 
 ## Changelogs
 
+#### v2.0.1 (25-05-25)
+
+- Fix typo on CVar name
+  - CORRECTED: `extv_admin_privileges_enabled`
+  - OLD: `extv_admin_previleges_enabled`
+
 #### v2.0.0 (25-05-25)
 
 - Initial standalone version

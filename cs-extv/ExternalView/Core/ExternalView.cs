@@ -59,7 +59,7 @@ namespace LupercaliaMGCore.modules.ExternalView
         public readonly FakeConVar<bool> ConVar_IsObserverViewEnabled =
             new("extv_observer_enabled", "True if observer views (i.e., freecam and watch) are enabled for non-admin players.", true);
         public readonly FakeConVar<bool> ConVar_IsAdminPrivilegesEnabled =
-            new("extv_admin_previleges_enabled", "True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)", true);
+            new("extv_admin_privileges_enabled", "True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)", true);
 
         float IExternalViewConVars.ThirdPersonMinDistance => ConVar_ThirdPersonMinDistance.Value;
         float IExternalViewConVars.ThirdPersonMaxDistance => ConVar_ThirdPersonMaxDistance.Value;
