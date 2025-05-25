@@ -3,3 +3,7 @@ addons/externalviewhelper/bin/win64
 cpp-extv/.vs
 cpp-extv/.vscode
 cpp-extv/out
+
+cs-extv/.vs
+cs-extv/*/bin
+cs-extv/*/obj
