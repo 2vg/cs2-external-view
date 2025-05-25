@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
@@ -40,26 +40,26 @@ namespace LupercaliaMGCore.modules.ExternalView
 
         // ConVars
         public readonly FakeConVar<bool> IsModuleEnabled =
-            new("lp_mg_external_view_enabled", "External view feature is enabled", true);
+            new("extv_enabled", "External view feature is enabled", true);
 
         public readonly FakeConVar<float> ConVar_ThirdPersonMinDistance =
-            new("lp_mg_external_view_thirdperson_min_distance", "The minimum camera distance for third-person camera.", 50);
+            new("extv_thirdperson_min_distance", "The minimum camera distance for third-person camera.", 50);
         public readonly FakeConVar<float> ConVar_ThirdPersonMaxDistance =
-            new("lp_mg_external_view_thirdperson_max_distance", "The maximum camera distance for third-person camera.", 200);
+            new("extv_thirdperson_max_distance", "The maximum camera distance for third-person camera.", 200);
         public readonly FakeConVar<float> ConVar_ModelViewCameraSpeed =
-            new("lp_mg_external_view_modelview_speed", "The speed of model view camera movement", 160);
+            new("extv_modelview_speed", "The speed of model view camera movement", 160);
         public readonly FakeConVar<float> ConVar_ModelViewCameraAltSpeed =
-            new("lp_mg_external_view_modelview_alt_speed", "The speed of model view camera movement while walk button pressed", 40);
+            new("extv_modelview_alt_speed", "The speed of model view camera movement while walk button pressed", 40);
         public readonly FakeConVar<float> ConVar_ModelViewCameraRadius =
-            new("lp_mg_external_view_modelview_radius", "The radius from the player the model view camera can fly around", 120);
+            new("extv_modelview_radius", "The radius from the player the model view camera can fly around", 120);
         public readonly FakeConVar<float> ConVar_FreeCameraSpeed =
-            new("lp_mg_external_view_freecam_speed", "The speed of free camera movement", 800);
+            new("extv_freecam_speed", "The speed of free camera movement", 800);
         public readonly FakeConVar<float> ConVar_FreeCameraAltSpeed =
-            new("lp_mg_external_view_freecam_alt_speed", "The speed of free camera movement while walk button pressed", 2400);
+            new("extv_freecam_alt_speed", "The speed of free camera movement while walk button pressed", 2400);
         public readonly FakeConVar<bool> ConVar_IsObserverViewEnabled =
-            new("lp_mg_external_view_observer_enabled", "True if observer views (i.e., freecam and watch) are enabled for non-admin players.", true);
+            new("extv_observer_enabled", "True if observer views (i.e., freecam and watch) are enabled for non-admin players.", true);
         public readonly FakeConVar<bool> ConVar_IsAdminPrevilegesEnabled =
-            new("lp_mg_external_view_admin_previleges_enabled", "True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)", true);
+            new("extv_admin_previleges_enabled", "True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)", true);
 
         float IExternalViewConVars.ThirdPersonMinDistance => ConVar_ThirdPersonMinDistance.Value;
         float IExternalViewConVars.ThirdPersonMaxDistance => ConVar_ThirdPersonMaxDistance.Value;
