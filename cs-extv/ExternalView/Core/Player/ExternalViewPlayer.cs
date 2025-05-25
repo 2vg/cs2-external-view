@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API.Modules.Commands.Targeting;
+using CounterStrikeSharp.API.Modules.Commands.Targeting;
 using LupercaliaMGCore.modules.ExternalView.API;
 using LupercaliaMGCore.modules.ExternalView.Cameras;
 using LupercaliaMGCore.modules.ExternalView.Player.Components;
@@ -173,7 +173,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Player
                 if (Api.ConVars.IsObserverViewEnabled)
                     return true;
 
-                if (Api.ConVars.IsAdminPrevilegesEnabled)
+                if (Api.ConVars.IsAdminPrivilegesEnabled)
                     return Player.IsAdmin;
 
                 return false;

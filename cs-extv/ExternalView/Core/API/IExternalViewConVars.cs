@@ -1,4 +1,4 @@
-﻿namespace LupercaliaMGCore.modules.ExternalView.API
+namespace LupercaliaMGCore.modules.ExternalView.API
 {
     public interface IExternalViewConVars
     {
@@ -10,6 +10,6 @@
         float FreeCameraSpeed { get; }
         float FreeCameraAltSpeed { get; }
         bool IsObserverViewEnabled { get; }
-        bool IsAdminPrevilegesEnabled { get; }
+        bool IsAdminPrivilegesEnabled { get; }
     }
 }

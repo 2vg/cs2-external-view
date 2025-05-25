@@ -58,7 +58,7 @@ namespace LupercaliaMGCore.modules.ExternalView
             new("extv_freecam_alt_speed", "The speed of free camera movement while walk button pressed", 2400);
         public readonly FakeConVar<bool> ConVar_IsObserverViewEnabled =
             new("extv_observer_enabled", "True if observer views (i.e., freecam and watch) are enabled for non-admin players.", true);
-        public readonly FakeConVar<bool> ConVar_IsAdminPrevilegesEnabled =
+        public readonly FakeConVar<bool> ConVar_IsAdminPrivilegesEnabled =
             new("extv_admin_previleges_enabled", "True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)", true);
 
         float IExternalViewConVars.ThirdPersonMinDistance => ConVar_ThirdPersonMinDistance.Value;
@@ -69,7 +69,7 @@ namespace LupercaliaMGCore.modules.ExternalView
         float IExternalViewConVars.FreeCameraSpeed => ConVar_FreeCameraSpeed.Value;
         float IExternalViewConVars.FreeCameraAltSpeed => ConVar_FreeCameraAltSpeed.Value;
         bool IExternalViewConVars.IsObserverViewEnabled => ConVar_IsObserverViewEnabled.Value;
-        bool IExternalViewConVars.IsAdminPrevilegesEnabled => ConVar_IsAdminPrevilegesEnabled.Value;
+        bool IExternalViewConVars.IsAdminPrivilegesEnabled => ConVar_IsAdminPrivilegesEnabled.Value;
 
         string ILocalizer.LocalizeForPlayer(CCSPlayerController controller, string message, params object[] args)
         {
@@ -91,6 +91,7 @@ namespace LupercaliaMGCore.modules.ExternalView
             TrackConVar(ConVar_ModelViewCameraRadius);
             TrackConVar(ConVar_FreeCameraSpeed);
             TrackConVar(ConVar_IsObserverViewEnabled);
+            TrackConVar(ConVar_IsAdminPrivilegesEnabled);
 
             Plugin.AddCommand("css_tp", "Toggles third person camera mode.", CommandThirdPerson);
             Plugin.AddCommand("css_tpp", "Toggles third person offset camera mode (right handed).", CommandThirdPersonOffsetRightHanded);
