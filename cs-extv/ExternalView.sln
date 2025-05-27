@@ -4,6 +4,8 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalView", "ExternalView\ExternalView.csproj", "{DF7C83B4-47E4-2FA2-AE5D-1590CAC134AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalView.Tests", "ExternalView.Tests\ExternalView.Tests.csproj", "{134232CB-A56A-492F-A48E-3DA6FEDE20A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,10 @@ Global
 		{DF7C83B4-47E4-2FA2-AE5D-1590CAC134AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF7C83B4-47E4-2FA2-AE5D-1590CAC134AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF7C83B4-47E4-2FA2-AE5D-1590CAC134AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{134232CB-A56A-492F-A48E-3DA6FEDE20A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{134232CB-A56A-492F-A48E-3DA6FEDE20A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{134232CB-A56A-492F-A48E-3DA6FEDE20A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{134232CB-A56A-492F-A48E-3DA6FEDE20A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
