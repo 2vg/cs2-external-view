@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using LupercaliaMGCore.modules.ExternalView.API;
 using LupercaliaMGCore.modules.ExternalView.Utils;
 using System;
@@ -7,7 +7,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Cameras
 {
     public class WatchCamera : BaseChaseCamera
     {
-        private IExternalViewCsPlayer? _CurrentTarget;
+        public IExternalViewCsPlayer? CurrentTarget;
 
         public WatchCamera(ICameraContext ctx, string? initialTarget) : base(ctx)
         {
@@ -41,7 +41,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Cameras
 
         private IEnumerable<ObserverTarget> Candidates => ObservablePlayers.Select(player => new ObserverTarget(player.Slot, player.Name));
 
-        protected override IExternalViewCsPlayer? Target => _CurrentTarget;
+        protected override IExternalViewCsPlayer? Target => CurrentTarget;
 
         protected override float Distance => Consts.DefaultCameraDistance;
 
@@ -49,7 +49,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Cameras
 
         public override bool Update()
         {
-            var target = _CurrentTarget;
+            var target = CurrentTarget;
 
             if (target == null)
                 return false;
@@ -119,7 +119,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Cameras
 
         private void SetTargetByObserverTarget(ObserverTarget obsTarget)
         {
-            _CurrentTarget = Ctx.Api.GetPlayerBySlot(obsTarget.Slot);
+            CurrentTarget = Ctx.Api.GetPlayerBySlot(obsTarget.Slot);
         }
     }
 }

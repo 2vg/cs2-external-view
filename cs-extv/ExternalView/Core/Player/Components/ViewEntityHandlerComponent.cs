@@ -1,4 +1,4 @@
-﻿using LupercaliaMGCore.modules.ExternalView.API;
+using LupercaliaMGCore.modules.ExternalView.API;
 
 namespace LupercaliaMGCore.modules.ExternalView.Player.Components
 {
