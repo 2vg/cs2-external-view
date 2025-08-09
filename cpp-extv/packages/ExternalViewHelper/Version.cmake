@@ -1,2 +1,2 @@
 
-set(ExternalViewHelper_VERSION v1.0.0)
+set(ExternalViewHelper_VERSION v1.1.0)

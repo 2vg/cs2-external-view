@@ -6,8 +6,8 @@
 #include <commonmacros.h>
 #include <vscript/ivscript.h>
 
-#include <addresses.h>
-#include <gameconfig.h>
+#include "./addresses.h"
+#include "./gameConfig.h"
 
 #include <lpe/core/sout.h>
 
