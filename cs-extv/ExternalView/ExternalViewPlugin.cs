@@ -14,7 +14,7 @@ public sealed class ExternalViewPlugin : TncssPluginBase
 
     public override string ModuleName => "External View";
 
-    public override string ModuleVersion => "2.0.0";
+    public override string ModuleVersion => "2.1.0";
 
     public override string ModuleAuthor => "Spitice";
 
