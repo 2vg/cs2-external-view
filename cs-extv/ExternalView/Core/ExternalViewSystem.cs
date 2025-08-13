@@ -1,4 +1,4 @@
-﻿using LupercaliaMGCore.modules.ExternalView.API;
+using LupercaliaMGCore.modules.ExternalView.API;
 using LupercaliaMGCore.modules.ExternalView.Cameras;
 using LupercaliaMGCore.modules.ExternalView.Player;
 
@@ -73,7 +73,7 @@ namespace LupercaliaMGCore.modules.ExternalView
 
                 if (isReverting)
                 {
-                    player.Player.PrintToChat("ExternalView.FirstPerson.Revert");
+                    player.Player.PrintToChat("ExternalView.ThirdPerson.Revert");
                 }
             }
         }
