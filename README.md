@@ -144,6 +144,19 @@ I'd like to acknowledge the ideas and inspirations I've drawn from the following
 
 ## Changelogs
 
+#### v2.1.1 (25-08-16)
+
+- (Helper) Rebuild with the latest HL2 SDK
+
+#### v2.1.0 (25-08-13)
+
+- Fix CsApi.GetPlayer sometimes fails to return the player
+- Fix player movement lock which is broken as of AnimGraph2 update
+- Fix notification message shown on switching camera mode from !fc/!g/!mv to thirdperson
+- (Helper) Rebuild with the latest HL2 SDK
+- (Helper) Update signatures changed by AnimGraph2 update
+- (Helper) Improve plugin initialization by using custom addresses/gameconfig class
+
 #### v2.0.2 (25-05-25)
 
 - Fix some CVars are not being tracked
