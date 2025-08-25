@@ -1,0 +1,244 @@
+name: CI/CD
+
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - '*'
+    paths-ignore:
+      - LICENSE
+      - README.md
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - LICENSE
+      - README.md
+      - '**.md'
+
+jobs:
+  build-cpp:
+    name: Build C++ (ExternalViewHelper)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            preset: Win64
+            artifact-name: windows-cpp
+          - os: ubuntu-latest
+            preset: linux-release
+            artifact-name: linux-cpp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup vcpkg (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: 'a42af01b72c28a8e1d7b48107b33e4f286a55ef6'
+
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build
+          # Install vcpkg
+          git clone https://github.com/Microsoft/vcpkg.git
+          ./vcpkg/bootstrap-vcpkg.sh
+          echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
+
+      - name: Configure CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        working-directory: cpp-extv
+        run: |
+          cmake --preset ${{ matrix.preset }}
+
+      - name: Configure CMake (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: cpp-extv
+        run: |
+          cmake --preset ${{ matrix.preset }}
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        working-directory: cpp-extv
+        run: |
+          cmake --build out/build/${{ matrix.preset }} --config Release
+
+      - name: Build (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: cpp-extv
+        run: |
+          cmake --build out/build/${{ matrix.preset }} --config Release
+
+      - name: Install (Windows)
+        if: matrix.os == 'windows-latest'
+        working-directory: cpp-extv
+        run: |
+          cmake --install out/build/${{ matrix.preset }} --config Release
+
+      - name: Install (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: cpp-extv
+        run: |
+          cmake --install out/build/${{ matrix.preset }} --config Release
+
+      - name: Prepare artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir -p artifacts/cpp
+          Copy-Item -Path "cpp-extv/out/install/${{ matrix.preset }}/bin/*" -Destination "artifacts/cpp/" -Recurse -Force
+
+      - name: Prepare artifacts (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p artifacts/cpp
+          cp -r cpp-extv/out/install/${{ matrix.preset }}/bin/* artifacts/cpp/ || true
+          cp -r cpp-extv/out/install/${{ matrix.preset }}/lib/* artifacts/cpp/ || true
+
+      - name: Upload C++ artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: artifacts/cpp/
+
+  build-csharp:
+    name: Build C# (ExternalView Plugin)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            artifact-name: windows-csharp
+          - os: ubuntu-latest
+            artifact-name: linux-csharp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        working-directory: cs-extv
+        run: dotnet restore
+
+      - name: Build
+        working-directory: cs-extv
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        working-directory: cs-extv
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+      - name: Publish
+        working-directory: cs-extv
+        run: dotnet publish ExternalView/ExternalView.csproj --configuration Release --output ../artifacts/csharp/
+
+      - name: Copy language files
+        run: |
+          mkdir -p artifacts/csharp/lang
+          cp addons/counterstrikesharp/plugins/ExternalView/lang/* artifacts/csharp/lang/
+
+      - name: Upload C# artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: artifacts/csharp/
+
+  package:
+    name: Package Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build-cpp, build-csharp]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create release packages
+        run: |
+          version=${GITHUB_REF#refs/tags/}
+          
+          # Create Windows package
+          mkdir -p release/windows/addons/metamod
+          mkdir -p release/windows/addons/counterstrikesharp/plugins/ExternalView
+          mkdir -p release/windows/addons/externalviewhelper/gamedata
+          
+          # Copy Windows C++ binaries
+          if [ -d "windows-cpp" ]; then
+            cp windows-cpp/* release/windows/addons/externalviewhelper/ || true
+          fi
+          
+          # Copy Windows C# plugin
+          if [ -d "windows-csharp" ]; then
+            cp windows-csharp/*.dll release/windows/addons/counterstrikesharp/plugins/ExternalView/ || true
+            cp -r windows-csharp/lang release/windows/addons/counterstrikesharp/plugins/ExternalView/ || true
+          fi
+          
+          # Copy configuration files
+          cp addons/metamod/externalviewhelper.vdf release/windows/addons/metamod/
+          cp addons/externalviewhelper/gamedata/externalviewhelper.games.txt release/windows/addons/externalviewhelper/gamedata/
+          
+          # Create Linux package
+          mkdir -p release/linux/addons/metamod
+          mkdir -p release/linux/addons/counterstrikesharp/plugins/ExternalView
+          mkdir -p release/linux/addons/externalviewhelper/gamedata
+          
+          # Copy Linux C++ binaries
+          if [ -d "linux-cpp" ]; then
+            cp linux-cpp/* release/linux/addons/externalviewhelper/ || true
+          fi
+          
+          # Copy Linux C# plugin
+          if [ -d "linux-csharp" ]; then
+            cp linux-csharp/*.dll release/linux/addons/counterstrikesharp/plugins/ExternalView/ || true
+            cp -r linux-csharp/lang release/linux/addons/counterstrikesharp/plugins/ExternalView/ || true
+          fi
+          
+          # Copy configuration files
+          cp addons/metamod/externalviewhelper.vdf release/linux/addons/metamod/
+          cp addons/externalviewhelper/gamedata/externalviewhelper.games.txt release/linux/addons/externalviewhelper/gamedata/
+          
+          # Create archives
+          cd release
+          if [ -d "windows" ]; then
+            cd windows
+            zip -r ../../cs2-external-view-${version}-windows.zip *
+            cd ..
+          fi
+          
+          if [ -d "linux" ]; then
+            cd linux
+            tar -czf ../../cs2-external-view-${version}-linux.tar.gz *
+            cd ..
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            cs2-external-view-*.zip
+            cs2-external-view-*.tar.gz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
