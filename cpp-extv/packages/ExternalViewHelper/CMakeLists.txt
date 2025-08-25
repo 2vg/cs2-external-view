@@ -1,7 +1,7 @@
 
 project(ExternalViewHelper LANGUAGES CXX)
 
-find_package(boost_core REQUIRED CONFIG)
+find_package(Boost REQUIRED COMPONENTS headers)
 
 include(Files.cmake)
 include(Version.cmake)
@@ -20,13 +20,21 @@ function(externalviewhelper_common TARGET_NAME)
         EXTERNALVIEWHELPER_VERSION="${ExternalViewHelper_VERSION}"
     )
 
-    target_compile_options(${TARGET_NAME} PRIVATE
-        "/MT"
-        # C4819: The file contains a character that cannot be represented in the current code page
-        "/wd4819"
-        # C4828: The file contains a character starting at offset 0x16 that is illegal in the current source character set (codepage 65001).
-        "/wd4828"
-    )
+    if(WIN32)
+        target_compile_options(${TARGET_NAME} PRIVATE
+            "/MT"
+            # C4819: The file contains a character that cannot be represented in the current code page
+            "/wd4819"
+            # C4828: The file contains a character starting at offset 0x16 that is illegal in the current source character set (codepage 65001).
+            "/wd4828"
+        )
+    else()
+        target_compile_options(${TARGET_NAME} PRIVATE
+            "-fPIC"
+            "-Wall"
+            "-Wextra"
+        )
+    endif()
 
     target_include_directories(${TARGET_NAME} PUBLIC
         $<INSTALL_INTERFACE:include>
@@ -37,7 +45,7 @@ function(externalviewhelper_common TARGET_NAME)
     )
 
     target_link_libraries(${TARGET_NAME} PUBLIC
-        Boost::core
+        Boost::headers
         CS2Fixes
         Lpe
     )

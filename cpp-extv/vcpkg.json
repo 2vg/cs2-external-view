@@ -2,7 +2,7 @@
   "name": "external-view-helper",
   "version": "1.0",
   "dependencies": [
-    "boost-core",
+    "boost-headers",
     "fakeit",
     {
       "name": "fmt",
