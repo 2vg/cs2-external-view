@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI
 
 on:
   push:
@@ -7,130 +7,107 @@ on:
     branches:
       - '*'
     paths-ignore:
-      - LICENSE
-      - README.md
-      - '**.md'
+    - LICENSE
+    - README.md
+    - '**.md'
   pull_request:
     paths-ignore:
-      - LICENSE
-      - README.md
-      - '**.md'
+    - LICENSE
+    - README.md
+    - '**.md'
 
 jobs:
   build-cpp:
     name: Build C++ (ExternalViewHelper)
     runs-on: ${{ matrix.os }}
+    env:
+        HL2SDKCS2: ${{ github.workspace }}/cs2-external-view/cpp-extv/extern/hl2sdk
+    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
-            preset: Win64
-            artifact-name: windows-cpp
           - os: ubuntu-latest
-            preset: linux-release
-            artifact-name: linux-cpp
-
+            container: registry.gitlab.steamos.cloud/steamrt/sniper/sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          path: cs2-external-view
           submodules: recursive
           fetch-depth: 0
 
-      - name: Initialize submodules
-        run: |
-          git submodule update --init --recursive
-
-      - name: Cache vcpkg
-        uses: actions/cache@v4
+      - name: Checkout Metamod
+        uses: actions/checkout@v4
         with:
-          path: |
-            ${{ github.workspace }}/vcpkg
-            !${{ github.workspace }}/vcpkg/buildtrees
-            !${{ github.workspace }}/vcpkg/packages
-            !${{ github.workspace }}/vcpkg/downloads
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-
+          repository: alliedmodders/metamod-source
+          ref: master
+          path: mmsource-2.0
+          submodules: recursive
+
+      - name: Checkout AMBuild
+        uses: actions/checkout@v4
+        with:
+          repository: alliedmodders/ambuild
+          path: ambuild
+
+      - name: Install AMBuild
+        run: |
+          cd ambuild && python setup.py install && cd ..
+
+      - name: Install Clang 16
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          apt update && apt install -y clang-16
+          ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
 
       - name: Setup vcpkg (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
-          git pull
           .\bootstrap-vcpkg.bat
-          .\vcpkg.exe update
           echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
 
-      - name: Install dependencies (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake ninja-build gcc-multilib g++-multilib
-          # Install vcpkg
-          git clone https://github.com/Microsoft/vcpkg.git
-          cd vcpkg
-          git pull
-          ./bootstrap-vcpkg.sh
-          ./vcpkg update
-          echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
-
-      - name: Configure CMake (Windows)
+      - name: Build C++ (Windows)
         if: matrix.os == 'windows-latest'
-        working-directory: cpp-extv
+        working-directory: cs2-external-view/cpp-extv
+        shell: bash
         run: |
-          cmake --preset ${{ matrix.preset }}
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static
+          cmake --build . --config Release
+          cmake --install . --config Release --prefix ../install
 
-      - name: Configure CMake (Linux)
+      - name: Build C++ (Linux)
         if: matrix.os == 'ubuntu-latest'
-        working-directory: cpp-extv
+        working-directory: cs2-external-view/cpp-extv
+        shell: bash
         run: |
-          cmake --preset ${{ matrix.preset }}
-
-      - name: Build (Windows)
-        if: matrix.os == 'windows-latest'
-        working-directory: cpp-extv
-        run: |
-          cmake --build out/build/${{ matrix.preset }} --config Release
-
-      - name: Build (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        working-directory: cpp-extv
-        run: |
-          cmake --build out/build/${{ matrix.preset }} --config Release
-
-      - name: Install (Windows)
-        if: matrix.os == 'windows-latest'
-        working-directory: cpp-extv
-        run: |
-          cmake --install out/build/${{ matrix.preset }} --config Release
-
-      - name: Install (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        working-directory: cpp-extv
-        run: |
-          cmake --install out/build/${{ matrix.preset }} --config Release
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+          make install DESTDIR=../install
 
       - name: Prepare artifacts (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts/cpp
-          Copy-Item -Path "cpp-extv/out/install/${{ matrix.preset }}/bin/*" -Destination "artifacts/cpp/" -Recurse -Force
+          Copy-Item -Path "cs2-external-view/cpp-extv/install/bin/*" -Destination "artifacts/cpp/" -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Prepare artifacts (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
           mkdir -p artifacts/cpp
-          cp -r cpp-extv/out/install/${{ matrix.preset }}/bin/* artifacts/cpp/ || true
-          cp -r cpp-extv/out/install/${{ matrix.preset }}/lib/* artifacts/cpp/ || true
+          cp -r cs2-external-view/cpp-extv/install/usr/local/bin/* artifacts/cpp/ 2>/dev/null || true
+          cp -r cs2-external-view/cpp-extv/install/usr/local/lib/* artifacts/cpp/ 2>/dev/null || true
 
       - name: Upload C++ artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact-name }}
+          name: ${{ runner.os }}-cpp
           path: artifacts/cpp/
 
   build-csharp:
@@ -142,9 +119,9 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
-            artifact-name: windows-csharp
+            artifact-name: Windows-csharp
           - os: ubuntu-latest
-            artifact-name: linux-csharp
+            artifact-name: Linux-csharp
 
     steps:
       - name: Checkout
@@ -207,14 +184,14 @@ jobs:
           mkdir -p release/windows/addons/externalviewhelper/gamedata
           
           # Copy Windows C++ binaries
-          if [ -d "windows-cpp" ]; then
-            cp windows-cpp/* release/windows/addons/externalviewhelper/ || true
+          if [ -d "Windows-cpp" ]; then
+            cp Windows-cpp/* release/windows/addons/externalviewhelper/ 2>/dev/null || true
           fi
           
           # Copy Windows C# plugin
-          if [ -d "windows-csharp" ]; then
-            cp windows-csharp/*.dll release/windows/addons/counterstrikesharp/plugins/ExternalView/ || true
-            cp -r windows-csharp/lang release/windows/addons/counterstrikesharp/plugins/ExternalView/ || true
+          if [ -d "Windows-csharp" ]; then
+            cp Windows-csharp/*.dll release/windows/addons/counterstrikesharp/plugins/ExternalView/ 2>/dev/null || true
+            cp -r Windows-csharp/lang release/windows/addons/counterstrikesharp/plugins/ExternalView/ 2>/dev/null || true
           fi
           
           # Copy configuration files
@@ -227,14 +204,14 @@ jobs:
           mkdir -p release/linux/addons/externalviewhelper/gamedata
           
           # Copy Linux C++ binaries
-          if [ -d "linux-cpp" ]; then
-            cp linux-cpp/* release/linux/addons/externalviewhelper/ || true
+          if [ -d "Linux-cpp" ]; then
+            cp Linux-cpp/* release/linux/addons/externalviewhelper/ 2>/dev/null || true
           fi
           
           # Copy Linux C# plugin
-          if [ -d "linux-csharp" ]; then
-            cp linux-csharp/*.dll release/linux/addons/counterstrikesharp/plugins/ExternalView/ || true
-            cp -r linux-csharp/lang release/linux/addons/counterstrikesharp/plugins/ExternalView/ || true
+          if [ -d "Linux-csharp" ]; then
+            cp Linux-csharp/*.dll release/linux/addons/counterstrikesharp/plugins/ExternalView/ 2>/dev/null || true
+            cp -r Linux-csharp/lang release/linux/addons/counterstrikesharp/plugins/ExternalView/ 2>/dev/null || true
           fi
           
           # Copy configuration files
