@@ -3,15 +3,15 @@
 
 ExternalView provides external camera modes (third-person, model view, watch other player, and free camera) for alive players that can be accessed via chat command or console command.
 
+This plugin uses CounterStrikeSharp's built-in `OnServerPreEntityThink`/`OnServerPostEntityThink` events to fix attack and use positions in third-person mode, eliminating the need for a separate C++ metamod plugin.
+
 ## Installation
 
 ### Standalone
 
 - PREREQUISITES:
-	- [Metamod:Source](https://www.metamodsource.net/)
 	- [CounterStrikeSharp](https://docs.cssharp.dev/index.html)
-	- [TNCSSPluginFoundation
-](https://github.com/fltuna/TNCSSPluginFoundation)
+	- [TNCSSPluginFoundation](https://github.com/fltuna/TNCSSPluginFoundation)
 - Download the [latest ExternalView release](https://github.com/spitice/cs2-external-view/releases)
 - Copy/move the files to the server's `csgo` directory
 
@@ -135,14 +135,19 @@ I'd like to acknowledge the ideas and inspirations I've drawn from the following
 	- Third-person camera idea via overriding CameraService.ViewEntity
 - [CS2-PlayerModelChanger](https://github.com/samyycX/CS2-PlayerModelChanger) by samyyc
 	- The logic to inspect player model by using prop_physics_override
-- [CS2Fixes](https://github.com/Source2ZE/CS2Fixes) by Source2ZE community
-	- Hooking PreEntityThink/PostEntityThink from metamod plugin
 - [TNCSSPluginFoundation](https://github.com/fltuna/TNCSSPluginFoundation/tree/main) by tuna
 	- Easier development of CSSharp plugin
-- [Metamod:Source](https://www.metamodsource.net/)
 - [CounterStrikeSharp](https://docs.cssharp.dev/index.html)
+	- OnServerPreEntityThink/OnServerPostEntityThink events for position fixing
 
 ## Changelogs
+
+#### v3.0.0 (25-08-26)
+
+- **BREAKING CHANGE**: Removed C++ metamod plugin dependency
+- Now uses CounterStrikeSharp's built-in OnServerPreEntityThink/OnServerPostEntityThink events
+- Simplified installation process - no longer requires Metamod:Source
+- Improved reliability and reduced complexity
 
 #### v2.1.1 (25-08-16)
 

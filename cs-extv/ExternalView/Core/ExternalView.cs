@@ -8,17 +8,17 @@ using TNCSSPluginFoundation.Models.Plugin;
 
 /**
  * Third person and custom view camera modes.
- * 
+ *
  * Including the following camera modes:
- * 
+ *
  * - Third person
  * - Third person (offseted to right/left)
  * - Model view
  * - Free camera (a.k.a., noclip)
  * - Watch other players
- * 
- * Requires ExternalViewHelper metamod plugin to fix shoot/+use location on third peron camera.
- * Check https://github.com/spitice/cs2-external-view for more detail.
+ *
+ * Uses CounterStrikeSharp's built-in OnServerPreEntityThink/OnServerPostEntityThink events
+ * to fix shoot/+use location on third person camera.
  *
  * This module is inspired by "ThirdPerson-WIP" plugin by BoinK & UgurhanK.
  * Big thanks for sharing the awesome plugin!
@@ -105,7 +105,7 @@ namespace LupercaliaMGCore.modules.ExternalView
             Plugin.AddCommand("css_g", "Starts to watche other player.", CommandWatch);
             Plugin.AddCommand("css_camdist", "Changes the third person camera distance.", CommandCamDist);
 
-            _PositionFixer = new AttackAndUsePositionFixer(Logger, (interval, action) => Plugin.AddTimer(interval, action), GetPlayersForPositonFix);
+            _PositionFixer = new AttackAndUsePositionFixer(Logger, Plugin, GetPlayersForPositonFix);
         }
 
         protected override void OnUnloadModule()
