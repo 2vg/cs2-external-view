@@ -111,6 +111,29 @@ extv_observer_enabled 1
 
 // True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)
 extv_admin_privileges_enabled 1
+
+// Enable model view camera feature
+extv_modelview_enabled 1
+
+// Enable camera obstruction handling via trace for third-person camera
+extv_thirdperson_traceblock_enabled 1
+```
+
+### Third-person trace-based camera obstruction
+
+Controls whether the third-person camera uses a world trace to prevent clipping into walls and props. When enabled, the camera position is pulled toward the player if an obstruction is detected; when disabled, the camera uses the desired offset without obstruction checks (may clip through geometry, but has lower CPU overhead).
+
+- 1: Enabled (default) — obstruction-aware camera with collision backoff
+- 0: Disabled — no trace, camera always uses desired position
+
+Example:
+
+```
+// Turn off trace-based obstruction handling
+extv_thirdperson_traceblock_enabled 0
+
+// Turn it back on
+extv_thirdperson_traceblock_enabled 1
 ```
 
 ### Disabling freecam and watch for PvP mode
@@ -142,12 +165,23 @@ I'd like to acknowledge the ideas and inspirations I've drawn from the following
 
 ## Changelogs
 
+#### v3.1.0 (25-09-14)
+
+- Compiled with latest CS#
+- Improved vector calculation
+- Add ConVar: `extv_modelview_enabled` 
+  - Default: 1 (enabled)
+- Add ConVar: `extv_thirdperson_traceblock_enabled`
+  - Toggle trace-based camera obstruction for third-person camera
+  - Default: 1 (enabled)
+
 #### v3.0.0 (25-08-26)
 
 - **BREAKING CHANGE**: Removed C++ metamod plugin dependency
 - Now uses CounterStrikeSharp's built-in OnServerPreEntityThink/OnServerPostEntityThink events
 - Simplified installation process - no longer requires Metamod:Source
 - Improved reliability and reduced complexity
+- Fixed code for latest TNCSSPluginFoundation
 
 #### v2.1.1 (25-08-16)
 

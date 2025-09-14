@@ -77,16 +77,22 @@ namespace LupercaliaMGCore.modules.ExternalView
                 if (controller == null)
                     continue;
 
-                var viewEntityHandleRaw = controller.PlayerPawn.Value?.CameraServices?.ViewEntity.Raw;
+                var pawn = controller.PlayerPawn.Value;
+                var cam = pawn?.CameraServices;
+                var viewEntityHandle = cam?.ViewEntity;
+                var viewEntityHandleRaw = viewEntityHandle?.Raw;
                 if (!viewEntityHandleRaw.HasValue)
                     continue;
 
-                if (viewEntityHandleRaw == uint.MaxValue)
+                if (viewEntityHandleRaw.Value == uint.MaxValue)
                     continue;
 
                 _FixedPlayers.Add(new FixedPlayer(controller, viewEntityHandleRaw.Value));
 
-                controller.PlayerPawn.Value!.CameraServices!.ViewEntity.Raw = uint.MaxValue;
+                if (viewEntityHandle != null)
+                {
+                    viewEntityHandle.Raw = uint.MaxValue;
+                }
             }
         }
 
@@ -97,7 +103,13 @@ namespace LupercaliaMGCore.modules.ExternalView
                 if (!player.Controller.IsValid)
                     continue;
 
-                player.Controller.PlayerPawn.Value!.CameraServices!.ViewEntity.Raw = player.LastViewEntityHandleRaw;
+                var pawn = player.Controller.PlayerPawn.Value;
+                var cam = pawn?.CameraServices;
+                var viewEntityHandle = cam?.ViewEntity;
+                if (viewEntityHandle == null)
+                    continue;
+
+                viewEntityHandle.Raw = player.LastViewEntityHandleRaw;
             }
             _FixedPlayers.Clear();
         }
