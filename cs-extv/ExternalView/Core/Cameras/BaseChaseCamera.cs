@@ -56,7 +56,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Cameras
                 var end = MathUtils.ToVector(desiredPosition);
 
                 // TODO: consider ignoring the target entity, enough Player | PlayerClip ?
-                var tr = TraceRay.TraceShape(start, end, TraceMask.MaskAll, Contents.Player | Contents.PlayerClip, 0);
+                var tr = TraceRay.TraceShape(start, end, TraceMask.MaskAll, Contents.Player | Contents.PlayerClip | Contents.Hitbox | Contents.Debris, 0);
 
                 if (tr.DidHit())
                 {
@@ -145,7 +145,7 @@ namespace LupercaliaMGCore.modules.ExternalView.Cameras
                         start,
                         end,
                         TraceMask.MaskAll,
-                        Contents.Player | Contents.PlayerClip | Contents.Hitbox | Contents.Debris | Contents.Solid,
+                        Contents.Player | Contents.PlayerClip | Contents.Hitbox | Contents.Debris,
                         0
                     );
 
