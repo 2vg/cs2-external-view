@@ -116,7 +116,7 @@ extv_admin_privileges_enabled 1
 extv_modelview_enabled 1
 
 // Enable camera obstruction handling via trace for third-person camera
-extv_thirdperson_traceblock_enabled 1
+extv_thirdperson_traceblock_enabled 0
 ```
 
 ### Third-person trace-based camera obstruction
@@ -173,7 +173,7 @@ I'd like to acknowledge the ideas and inspirations I've drawn from the following
   - Default: 1 (enabled)
 - Add ConVar: `extv_thirdperson_traceblock_enabled`
   - Toggle trace-based camera obstruction for third-person camera
-  - Default: 1 (enabled)
+  - Default: 0 (disabled)
 
 #### v3.0.0 (25-08-26)
 

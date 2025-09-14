@@ -14,6 +14,6 @@ namespace ExternalView.Tests.Core.Fakes
         public bool IsObserverViewEnabled { get; set; } = true;
         public bool IsModelViewEnabled { get; set; } = true;
         public bool IsAdminPrivilegesEnabled { get; set; } = true;
-        public bool IsThirdPersonTraceBlockEnabled { get; set; } = true;
+        public bool IsThirdPersonTraceBlockEnabled { get; set; } = false;
     }
 }

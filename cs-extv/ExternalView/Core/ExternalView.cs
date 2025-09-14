@@ -63,7 +63,7 @@ namespace LupercaliaMGCore.modules.ExternalView
         public readonly FakeConVar<bool> ConVar_IsAdminPrivilegesEnabled =
             new("extv_admin_privileges_enabled", "True if admins can use all features regardless of the flags (e.g., IsObserverViewEnabled)", true);
         public readonly FakeConVar<bool> ConVar_IsThirdPersonTraceBlockEnabled =
-            new("extv_thirdperson_traceblock_enabled", "Enable camera obstruction handling via trace for third-person camera", true);
+            new("extv_thirdperson_traceblock_enabled", "Enable camera obstruction handling via trace for third-person camera", false);
 
         float IExternalViewConVars.ThirdPersonMinDistance => ConVar_ThirdPersonMinDistance.Value;
         float IExternalViewConVars.ThirdPersonMaxDistance => ConVar_ThirdPersonMaxDistance.Value;
