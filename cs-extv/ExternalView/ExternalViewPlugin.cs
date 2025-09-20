@@ -16,7 +16,7 @@ public sealed class ExternalViewPlugin : TncssPluginBase
 
     public override string ModuleVersion => "3.0.0";
 
-    public override string ModuleAuthor => "Spitice";
+    public override string ModuleAuthor => "Spitice, uru";
 
     public override string ModuleDescription => "A standalone plugin of Lupercalia MG ExternalView - now C# only!";
 
